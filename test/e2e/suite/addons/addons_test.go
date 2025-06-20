@@ -8,6 +8,7 @@ import (
 	"flag"
 	"fmt"
 	"math/rand"
+	"os"
 	"testing"
 
 	. "github.com/onsi/ginkgo/v2"
@@ -16,6 +17,7 @@ import (
 	"gopkg.in/yaml.v2"
 
 	"github.com/aws/eks-hybrid/test/e2e"
+	osystem "github.com/aws/eks-hybrid/test/e2e/os"
 	"github.com/aws/eks-hybrid/test/e2e/suite"
 )
 
@@ -208,7 +210,10 @@ var _ = Describe("Hybrid Nodes", func() {
 					osList[i], osList[j] = osList[j], osList[i]
 				})
 
-				os := osList[0].OS
+				fmt.Printf("RHEL USERNAME: %s", os.Getenv("RHEL_USERNAME"))
+				fmt.Printf("RHEL PASSWORD: %s", os.Getenv("RHEL_PASSWORD"))
+
+				os := osystem.NewRedHat9AMD(os.Getenv("RHEL_USERNAME"), os.Getenv("RHEL_PASSWORD"))
 				provider := osList[0].Provider
 				instanceName := addonEc2Test.InstanceName("addon-nvidia-test", os.Name(), string(provider.Name()))
 				nodeName := fmt.Sprintf("addon-nvidia-node-%s-%s", provider.Name(), os.Name())
